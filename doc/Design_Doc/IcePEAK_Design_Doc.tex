@@ -7,6 +7,7 @@
 \usepackage{amssymb}
 \usepackage{array}
 \usepackage{longtable}
+\usepackage{pgfgantt}
 
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.5em}
@@ -30,9 +31,15 @@
 \section{Executive Summary}
 %% ============================================================
 
-% Most important page of the design doc.
-% Usually 20--25 lines. Include 1--2 sentence descriptions of high concept,
-% target audience, market appeal, game play, implementation details, schedule.
+\textbf{IcePEAK} is a first-person VR survival-adventure in which the player physically drives ice picks into a crumbling frozen mountainside and climbs toward the summit with their own hands. Built for the Meta Quest~3 via PCVR (Quest Link), the game combines physics-based climbing with a destructible-ice mechanic: every handhold shatters roughly two seconds after the pick is planted, turning each reach into a split-second decision.
+
+The target audience is VR gamers aged 16--35 who enjoy physically active, high-stakes experiences. No existing VR climbing game forces the player to race against crumbling holds, making IcePEAK's core loop --- swing, grip, move before it breaks --- immediately distinctive in the market.
+
+Gameplay centers on ascending a single massive mountain divided into three altitude zones of escalating difficulty. The player manages a limited set of tangible gadgets grabbed from a body-mounted harness: a grappling hook to cross gaps, cold spray to reinforce fragile ice, a helmet to survive one rockfall strike, and metal poles to create anchor points on ungrippable rock. Dynamic hazards --- falling rocks, ice storms, and intensifying wind --- keep the climber under constant pressure. There are no stamina bars or abstract meters; every resource is a physical object the player can see and grab.
+
+The game is implemented in Unity 2022 LTS using the Universal Render Pipeline and the Meta XR SDK. Ice destruction uses pre-fractured mesh swapping triggered by a coroutine timer. Climbing locomotion maps controller displacement to camera-rig movement via inverse kinematics. All interactions are physics-driven through Unity's Rigidbody system.
+
+The development schedule spans five weeks. The alpha version (April~20) delivers a vertical slice: core climbing, ice destruction, checkpoints, and two gadgets. The beta (April~27) expands to the full three-zone mountain with all gadgets, environmental hazards, and audio. The final version ships May~7, with gameplay and trailer videos due May~8.
 
 \newpage
 
@@ -607,8 +614,87 @@ The full game from base camp to summit across all three zones. All four gadgets 
 
 % -----------------------------------------------------------------
 \subsection{Development Schedule}
-% Organize your work plan tasks in the form of a Gantt chart.
-% List all the major tasks and subtasks (including durations) and the dates
-% of each minor (weekly) milestone and major milestone (e.g.\ alpha, beta, final).
+
+% Day mapping (calendar days, Apr 6 = day 1, May 8 = day 33):
+% Apr 6(Mon)=1, Apr 7=2, ..., Apr 12(Sun)=7
+% Apr 13(Mon)=8, ..., Apr 19(Sun)=14
+% Apr 20(Mon)=15, ..., Apr 26(Sun)=21
+% Apr 27(Mon)=22, ..., May 3(Sun)=28
+% May 4(Mon)=29, ..., May 8(Thu)=33
+
+\noindent\resizebox{\textwidth}{!}{%
+\begin{ganttchart}[
+    x unit=0.55cm,
+    y unit title=0.55cm,
+    y unit chart=0.45cm,
+    hgrid,
+    vgrid={*1{draw=gray!30}},
+    title height=1,
+    bar height=0.6,
+    bar/.append style={fill=blue!40},
+    group/.append style={draw=black, fill=blue!70},
+    milestone/.append style={fill=red!70, rounded corners=1pt},
+    title label font=\scriptsize,
+    bar label font=\scriptsize,
+    group label font=\scriptsize\bfseries,
+    milestone label font=\scriptsize\bfseries,
+]{1}{33}
+
+    % Title row 1: weeks
+    \gantttitle{Week 1 (Apr 6--12)}{7}
+    \gantttitle{Week 2 (Apr 13--19)}{7}
+    \gantttitle{Week 3 (Apr 20--26)}{7}
+    \gantttitle{Week 4 (Apr 27--May 3)}{7}
+    \gantttitle{Week 5 (May 4--8)}{5} \\
+
+    % Title row 2: days
+    \gantttitle{M}{1}\gantttitle{T}{1}\gantttitle{W}{1}\gantttitle{T}{1}\gantttitle{F}{1}\gantttitle{S}{1}\gantttitle{S}{1}
+    \gantttitle{M}{1}\gantttitle{T}{1}\gantttitle{W}{1}\gantttitle{T}{1}\gantttitle{F}{1}\gantttitle{S}{1}\gantttitle{S}{1}
+    \gantttitle{M}{1}\gantttitle{T}{1}\gantttitle{W}{1}\gantttitle{T}{1}\gantttitle{F}{1}\gantttitle{S}{1}\gantttitle{S}{1}
+    \gantttitle{M}{1}\gantttitle{T}{1}\gantttitle{W}{1}\gantttitle{T}{1}\gantttitle{F}{1}\gantttitle{S}{1}\gantttitle{S}{1}
+    \gantttitle{M}{1}\gantttitle{T}{1}\gantttitle{W}{1}\gantttitle{T}{1}\gantttitle{F}{1} \\
+
+    % Tasks (group-level bars only) 
+    \ganttbar[bar/.append style={fill=blue!70}]{1. Core Climbing}{1}{5} \\
+    \ganttbar[bar/.append style={fill=blue!70}]{2. Ice Destruction}{3}{7} \\
+    \ganttbar[bar/.append style={fill=blue!70}]{3. Rock \& Checkpoints}{5}{8} \\
+    \ganttbar[bar/.append style={fill=blue!70}]{4. Gadgets}{8}{14} \\
+
+    % Alpha milestone (Apr 20)
+    \ganttmilestone{Alpha Playtest (Apr 20)}{15} \\
+
+    \ganttbar[bar/.append style={fill=blue!70}]{5. Environment \& Levels}{15}{21} \\
+    \ganttbar[bar/.append style={fill=blue!70}]{6. Environmental Hazards}{17}{21} \\
+    \ganttbar[bar/.append style={fill=blue!70}]{7. Audio \& Haptics}{18}{21} \\
+
+    % Beta milestone (Apr 27)
+    \ganttmilestone{Beta Playtest (Apr 27)}{22} \\
+
+    \ganttbar[bar/.append style={fill=blue!70}]{8. Player Body \& IK}{22}{24} \\
+    \ganttbar[bar/.append style={fill=blue!70}]{9. Performance Optimization}{24}{26} \\
+    \ganttbar[bar/.append style={fill=blue!70}]{10. Polish \& Final Build}{27}{33} \\
+
+    % Final milestones
+    \ganttmilestone{Final Version (May 7)}{32} \\
+    \ganttmilestone{Videos Due (May 8)}{33}
+
+    % Dependencies
+    \ganttlink{elem0}{elem2}
+    \ganttlink{elem1}{elem2}
+    \ganttlink{elem2}{elem3}
+    \ganttlink{elem3}{elem4}
+    \ganttlink{elem4}{elem5}
+    \ganttlink{elem4}{elem6}
+    \ganttlink{elem4}{elem7}
+    \ganttlink{elem5}{elem8}
+    \ganttlink{elem6}{elem8}
+    \ganttlink{elem7}{elem8}
+    \ganttlink{elem8}{elem9}
+    \ganttlink{elem9}{elem10}
+    \ganttlink{elem10}{elem11}
+    \ganttlink{elem11}{elem12}
+
+\end{ganttchart}%
+}
 
 \end{document}
