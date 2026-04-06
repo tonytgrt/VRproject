@@ -248,16 +248,52 @@ Not applicable.
 \subsection{Performance and Scoring}
 
 \subsubsection{State Variables}
-% What are all the character, environment and gameplay variables necessary to
-% save/restore or pause/resume the game or virtual world experience?
+
+The game consists of a single continuous level with multiple checkpoint platforms. The following variables are necessary to save/restore or pause/resume the session:
+
+\begin{itemize}[leftmargin=2em]
+    \item \textbf{Current checkpoint} --- the highest rock-platform checkpoint the player has reached. Used as the respawn point.
+    \item \textbf{Current altitude} --- the player's real-time vertical position on the mountain (meters above base camp).
+    \item \textbf{Highest altitude} --- the maximum altitude the player has reached during this session.
+    \item \textbf{Gadget inventory} --- which gadgets occupy each harness slot (type and count per slot).
+    \item \textbf{Helmet status} --- whether the helmet is equipped and intact or already broken.
+    \item \textbf{Ice surface states} --- for each ice surface near the player: intact, cracking (with remaining time), or shattered. Surfaces far below the current checkpoint can be reset.
+    \item \textbf{Supply cache states} --- which caches have been collected (so they do not respawn).
+    \item \textbf{Active hazard timers} --- any in-progress rockfall or ice storm events and their remaining duration.
+    \item \textbf{Player hand states} --- whether each hand currently has a pick embedded in a surface (left grip, right grip, or free).
+\end{itemize}
+
+On pause, all physics and timers freeze. On resume, they continue from the saved state. On respawn (both hands lose support), the player is placed on the highest reached checkpoint with ice surfaces in that area reset to intact and the gadget inventory preserved as-is.
 
 \subsubsection{Feedback}
-% What are the positive and negative feedback mechanisms you plan to employ
-% and how do they affect the game play (i.e.\ help or hurt player performance)?
+
+\textbf{Positive feedback:}
+\begin{itemize}[leftmargin=2em]
+    \item \textbf{Successful pick embed} --- a satisfying \emph{thunk} sound and haptic pulse in the controller confirm the hold is secure.
+    \item \textbf{Reaching a checkpoint} --- a brief chime and a warm glow emanates from the rock platform, signaling safety. The current altitude is displayed momentarily as carved markings on the rock.
+    \item \textbf{Altitude milestone} --- when the player reaches a new highest altitude, a subtle wind-chime audio cue plays, reinforcing upward progress.
+    \item \textbf{Gadget use} --- each gadget has a distinct audio-visual payoff (grappling hook zip, cold spray crystallization effect, pole locking into rock with a metallic clang).
+\end{itemize}
+
+\textbf{Negative feedback:}
+\begin{itemize}[leftmargin=2em]
+    \item \textbf{Ice cracking} --- escalating crackle audio and visible fracture lines warn the player the hold is about to give way. Controller haptics intensify as time runs out.
+    \item \textbf{Falling rock warning} --- a shadow passes over the player and a deep rumble plays 1--2 seconds before impact. If hit without a helmet, the player is knocked off the wall.
+    \item \textbf{Fall and respawn} --- when both hands lose support, the player falls briefly (with vertigo-inducing visual blur) before fading to black and respawning at the last checkpoint. This short fall sequence reinforces the stakes without being punishing --- gadget inventory is preserved and the checkpoint is nearby.
+    \item \textbf{Glancing pick strike} --- if the swing is too slow or the angle is wrong, the pick sparks off the surface with a metallic scrape and no embed occurs, giving immediate feedback to adjust technique.
+\end{itemize}
 
 \subsubsection{Performance and Progress Metrics}
-% How will you monitor player progress regarding achieving the game's goals
-% and objectives? How do you win? How do you lose?
+
+\textbf{Progress tracking.} The player's performance is measured by two altitude values:
+\begin{itemize}[leftmargin=2em]
+    \item \textbf{Current altitude} --- the player's present height on the mountain, visible as environmental markings on checkpoint platforms.
+    \item \textbf{Highest altitude} --- the peak altitude reached during the session, tracked persistently.
+\end{itemize}
+
+\textbf{Winning.} The player wins by reaching the summit platform at the top of the mountain. Upon arrival, the panoramic vista and a final altitude reading confirm completion.
+
+\textbf{Losing.} There is no permanent game-over state. When both hands lose support (both picks dislodge or ice shatters under both holds simultaneously), the player falls and respawns at the highest checkpoint reached. The player keeps all remaining gadgets. Progress is never lost beyond the last checkpoint, but supply caches do not respawn, so reckless play gradually depletes available resources for the climb ahead.
 
 \newpage
 
