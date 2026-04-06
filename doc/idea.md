@@ -10,6 +10,7 @@
  - Have unbreakable platforms for climbing
  - All other iced surfaces break after 2 seconds of inserting the ice pick
 
+
 ### 2. Coop / competition involving both Bird's eye and Worm's eye views
  - Theme: bank heist getaway — one player is the robber on the ground, the other is a partner piloting a drone overhead
  - Robber (worm's eye, first-person): runs through city streets, alleys, and buildings to escape pursuing cops
