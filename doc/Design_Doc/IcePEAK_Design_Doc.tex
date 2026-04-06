@@ -5,6 +5,8 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{array}
+\usepackage{longtable}
 
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.5em}
@@ -309,7 +311,7 @@ On pause, all physics and timers freeze. On resume, they continue from the saved
 \subsubsection{Hardware}
 
 \begin{itemize}[leftmargin=2em]
-    \item \textbf{Headset:} Meta Quest~3 (standalone mode). The Snapdragon XR2 Gen~2 processor, 8\,GB RAM, and Adreno 740 GPU are the target hardware baseline.
+    \item \textbf{Headset:} Meta Quest~3 connected to a PC via Quest Link (USB-C or Air Link). The game runs on the PC and streams to the headset.
     \item \textbf{Controllers:} Quest~3 Touch Plus controllers (two, one per hand). 6DoF tracking is required for swing detection and spatial positioning.
     \item \textbf{Play space:} Standing or room-scale VR. A minimum 2\,m $\times$ 2\,m play area is recommended so the player can extend both arms overhead and to the sides while climbing.
 \end{itemize}
@@ -319,9 +321,9 @@ On pause, all physics and timers freeze. On resume, they continue from the saved
 \begin{itemize}[leftmargin=2em]
     \item \textbf{Game engine:} Unity 2022 LTS (or newer 2022.3.x patch).
     \item \textbf{XR framework:} Meta XR SDK (formerly Oculus Integration) for Quest~3 input, hand tracking fallback, and performance profiling.
-    \item \textbf{Rendering:} Universal Render Pipeline (URP) configured for mobile VR (single-pass instanced rendering, foveated rendering enabled).
-    \item \textbf{Target platform:} Android (Quest~3 standalone APK). No PC tethering required.
-    \item \textbf{Minimum OS:} Quest system software v62 or later.
+    \item \textbf{Rendering:} Universal Render Pipeline (URP) with single-pass instanced rendering.
+    \item \textbf{Target platform:} Windows (PCVR). The game is built as a Windows executable and streamed to the Quest~3 headset via Quest Link.
+    \item \textbf{Minimum PC specs:} Windows 10/11, NVIDIA GTX 1070 or equivalent, 16\,GB RAM, USB-C or Wi-Fi 6 for Air Link.
 \end{itemize}
 
 \subsubsection{Algorithms and Techniques}
@@ -349,7 +351,7 @@ On pause, all physics and timers freeze. On resume, they continue from the saved
 
     \item \textbf{Checkpoint system.} Each rock platform has a trigger collider. When the player's feet (or camera rig Y-position) enters the trigger, the platform is recorded as the current checkpoint and the highest-altitude value is updated if applicable.
 
-    \item \textbf{Performance optimization.} Level-of-detail (LOD) groups on distant mountain geometry, shader-based fog to limit draw distance, dynamic batching of ice fragment meshes, and object pooling for rock hazards and particle effects to maintain 72\,fps on Quest~3.
+    \item \textbf{Performance optimization.} Level-of-detail (LOD) groups on distant mountain geometry, shader-based fog to limit draw distance, dynamic batching of ice fragment meshes, and object pooling for rock hazards and particle effects to maintain 72\,fps via PCVR.
 \end{itemize}
 
 % -----------------------------------------------------------------
@@ -446,7 +448,7 @@ The alpha is the first playable build, targeting the April~20 playtest. It deliv
     \item Basic environment: one simplified mountain column with 3--4 checkpoint platforms and connecting ice surfaces.
     \item Altitude tracking: current and highest altitude displayed at checkpoints.
     \item Haptic feedback on pick embed and ice cracking.
-    \item Runs on Quest~3 standalone at 72\,fps.
+    \item Runs via PCVR (Quest Link) at 72\,fps.
 \end{itemize}
 
 \subsubsection{Beta Version Features}
@@ -463,7 +465,7 @@ The beta targets the April~27 playtest. It expands the alpha into the full game 
     \item Difficulty scaling with altitude (ice fragility, hazard frequency, supply scarcity).
     \item Audio pass: ambient wind, crack escalation sounds, gadget sound effects, rockfall rumble.
     \item Summit finale with panoramic vista.
-    \item Performance optimization pass (LODs, object pooling, foveated rendering).
+    \item Performance optimization pass (LODs, object pooling).
 \end{itemize}
 
 \subsubsection{Descriptions of any tutorial levels and/or self-running Demos}
@@ -486,26 +488,122 @@ No self-running demo is planned. The gameplay trailer (due May~8) will serve as 
 
 % -----------------------------------------------------------------
 \subsection{Tasks}
-% List and number ALL the tasks and subtasks which are necessary to develop
-% your game application.
-% Provide separate descriptions of each task and subtask, which members of
-% the group are assigned to it, and the expected task duration (in days).
+
+\renewcommand{\arraystretch}{1.4}
+\setlength{\LTleft}{0pt}
+\setlength{\LTright}{0pt}
+\begin{longtable}{|c|p{2.8cm}|p{7.2cm}|c|c|}
+\hline
+ \# & \textbf{Task} & \textbf{Description} & \textbf{Time} & \textbf{Member} \\
+\hline
+\endfirsthead
+\hline
+ \# & \textbf{Task} & \textbf{Description} & \textbf{Time} & \textbf{Member} \\
+\hline
+\endhead
+\hline
+\endfoot
+\textbf{1} & \textbf{Task: Core Climbing} & \textbf{Implement the fundamental ice-pick climbing mechanic on Quest~3.} & \textbf{5 days} & \textbf{CC} \\
+\hline
+1.1 & Subtask: Pick Embed Detection & Detect controller swing velocity via Meta XR SDK and determine whether the ice pick embeds based on a speed threshold and surface tag. & 2 days & CC \\
+\hline
+1.2 & Subtask: Climbing Locomotion & Move the XR camera rig upward as the player pulls down on an embedded pick. Implement inverse displacement mapping per-frame. & 2 days & CC \\
+\hline
+1.3 & Subtask: Grip \& Release & Track grip-button state per hand. When grip is released or ice shatters under both hands, trigger the fall/respawn sequence. & 1 day & CC \\
+\hline
+\textbf{2} & \textbf{Task: Ice Destruction} & \textbf{Implement the cracking and shattering behavior of ice surfaces.} & \textbf{4 days} & \textbf{CC/YT} \\
+\hline
+2.1 & Subtask: Crack Timer \& VFX & Start a 2-second timer on pick embed. Display spreading crack-line shader effect and escalating audio cue. & 2 days & YT \\
+\hline
+2.2 & Subtask: Shatter \& Cleanup & Swap intact mesh for pre-fractured pieces on timer expiry. Apply outward forces to fragments, then destroy them after a short lifetime. & 2 days & CC \\
+\hline
+\textbf{3} & \textbf{Task: Rock Platforms \& Checkpoints} & \textbf{Build rock-surface logic and the checkpoint/respawn system.} & \textbf{3 days} & \textbf{JP} \\
+\hline
+3.1 & Subtask: Rock Surface Rejection & Tag rock surfaces so ice picks bounce off with a spark effect and audio cue instead of embedding. & 1 day & JP \\
+\hline
+3.2 & Subtask: Checkpoint System & Place trigger colliders on rock platforms. Record highest checkpoint and altitude on entry. Implement respawn (fade to black, reposition, reset nearby ice). & 2 days & JP \\
+\hline
+\textbf{4} & \textbf{Task: Gadgets} & \textbf{Implement all four player gadgets and the body-mounted harness.} & \textbf{7 days} & \textbf{CC/JP/YT} \\
+\hline
+4.1 & Subtask: Harness \& Grab System & Model the harness with gadget slots on the player's torso. Allow the player to look down, reach, and grab gadgets with the grip button. & 2 days & JP \\
+\hline
+4.2 & Subtask: Cold Spray & On trigger press, extend the ice crack timer on the targeted surface and play a frost particle effect. & 1 day & YT \\
+\hline
+4.3 & Subtask: Grappling Hook & Fire a raycast on trigger press. On hit, draw a line-renderer rope and lerp the player to the target over $\sim$0.5\,s. Consume the hook on use. & 2 days & CC \\
+\hline
+4.4 & Subtask: Helmet & Track helmet equipped state. Absorb one falling-rock hit, then break the helmet with a visual/audio effect. & 1 day & YT \\
+\hline
+4.5 & Subtask: Poles & On trigger press against a rock surface, instantiate a pole prefab with a fixed joint. Give the pole tip an Ice-tagged collider so picks can embed in it. & 1 day & JP \\
+\hline
+\textbf{5} & \textbf{Task: Environment \& Level Design} & \textbf{Build the full mountain environment across three altitude zones.} & \textbf{7 days} & \textbf{JP/YT} \\
+\hline
+5.1 & Subtask: Zone~1 (Lower Ice Field) & Model wide ice walls, generous rock platforms, and tutorial-area layout. Place supply caches. Set ice crack timer to $\sim$3\,s. & 2 days & JP \\
+\hline
+5.2 & Subtask: Zone~2 (The Ridge) & Model narrower corridors, steeper overhangs, and branching routes. Place supply caches at risk--reward decision points. & 3 days & JP/YT \\
+\hline
+5.3 & Subtask: Zone~3 (Summit Push) & Model near-vertical faces with fragile ice ($<$2\,s). Sparse caches. Build the summit platform with panoramic vista. & 2 days & YT \\
+\hline
+\textbf{6} & \textbf{Task: Environmental Hazards} & \textbf{Implement dynamic hazards: falling rocks, ice storms, wind.} & \textbf{5 days} & \textbf{YT} \\
+\hline
+6.1 & Subtask: Falling Rocks & Spawn rocks via trigger zones/timers. Add shadow projector and rumble audio 1--2\,s before impact. Handle collision with player (check helmet state). & 3 days & YT \\
+\hline
+6.2 & Subtask: Ice Storms \& Wind & Implement particle-system blizzard and post-processing fog. Apply lateral force to camera rig during storms. Increase intensity with altitude. & 2 days & YT \\
+\hline
+\textbf{7} & \textbf{Task: Audio \& Haptics} & \textbf{Implement all sound effects and controller haptic feedback.} & \textbf{4 days} & \textbf{JP} \\
+\hline
+7.1 & Subtask: Climbing Audio & Pick embed thunk, ice cracking escalation, pick bounce off rock, ambient wind. & 2 days & JP \\
+\hline
+7.2 & Subtask: Haptic Feedback & Controller vibration on pick embed, escalating buzz during ice cracking, jolt on rockfall impact, zip vibration on grappling hook. & 1 day & JP \\
+\hline
+7.3 & Subtask: Gadget \& UI Audio & Cold spray hiss, grappling hook fire/zip, pole clang, checkpoint chime, altitude milestone wind-chime. & 1 day & JP \\
+\hline
+\textbf{8} & \textbf{Task: Player Body \& IK} & \textbf{Set up upper-body inverse kinematics for immersive body presence.} & \textbf{3 days} & \textbf{CC} \\
+\hline
+8.1 & Subtask: IK Rig Setup & Configure Unity Animation Rigging (or Final IK) to map headset and controllers to visible torso, arms, and hands. & 2 days & CC \\
+\hline
+8.2 & Subtask: Gear Visibility & Attach ice-pick models to hand transforms. Display harness, carabiners, and backpack on the torso mesh. & 1 day & CC \\
+\hline
+\textbf{9} & \textbf{Task: Performance Optimization} & \textbf{Ensure stable 72\,fps via PCVR.} & \textbf{3 days} & \textbf{CC/JP/YT} \\
+\hline
+9.1 & Subtask: LOD \& Draw Distance & Add LOD groups to distant geometry. Tune fog to limit draw calls. & 1 day & CC \\
+\hline
+9.2 & Subtask: Object Pooling & Pool ice fragments, rock hazards, and particle effects to avoid runtime allocation spikes. & 1 day & JP \\
+\hline
+9.3 & Subtask: Profiling \& Fixes & Profile with Unity Profiler and frame debugger. Identify and fix frame-rate drops. & 1 day & YT \\
+\hline
+\textbf{10} & \textbf{Task: Polish \& Final Build} & \textbf{Bug fixes, play-testing, final build packaging.} & \textbf{4 days} & \textbf{CC/JP/YT} \\
+\hline
+10.1 & Subtask: Bug Fixing & Address issues found during alpha and beta playtests. & 2 days & CC/JP/YT \\
+\hline
+10.2 & Subtask: Final Build \& Videos & Package the final PCVR build. Record gameplay video and promotional trailer. & 2 days & CC/JP/YT \\
+\hline
+\end{longtable}
+\renewcommand{\arraystretch}{1.0}
 
 % -----------------------------------------------------------------
 \subsection{Milestones}
 
 \subsubsection{Minor}
-% On a week by week basis describe the functionality you plan to achieve
-% (and will be able to demonstrate).
+
+\begin{itemize}[leftmargin=2em]
+    \item \textbf{Week 1 (Apr 6--12).} Core climbing loop functional: ice pick embed detection, climbing locomotion, grip/release, and basic ice destruction (crack timer + shatter). A single test column with 2--3 ice surfaces and one rock platform is playable on Quest~3.
+
+    \item \textbf{Week 2 (Apr 13--19).} Rock surface rejection and checkpoint/respawn system working. At least two gadgets implemented (cold spray and grappling hook). Harness grab system in place. Zone~1 environment blocked out with placeholder geometry and supply caches. Ready for alpha playtest.
+
+    \item \textbf{Week 3 (Apr 20--26).} Remaining gadgets (helmet, poles) functional. Zones~2 and~3 built out with branching routes. Environmental hazards (falling rocks, ice storms) active. Audio and haptic feedback pass complete. Ready for beta playtest.
+
+    \item \textbf{Week 4 (Apr 27--May 3).} Player body IK and gear visibility polished. Performance optimization pass (LODs, object pooling). Bug fixes from beta playtest feedback.
+
+    \item \textbf{Week 5 (May 4--8).} Final bug fixes and balancing. Final PCVR build packaged. Gameplay video and promotional trailer recorded and edited.
+\end{itemize}
 
 \subsubsection{Major}
-% Describe the major milestones of the project.
 
-\paragraph{Alpha Version.}
-% Describe the main functionality you plan to achieve and demonstrate.
+\paragraph{Alpha Version (April 20).}
+A vertical slice of the complete experience. The player can climb from a starting platform through Zone~1 to a summit marker using ice picks and at least two gadgets. Core systems demonstrated: ice pick embed with velocity detection, ice cracking/shattering on a 2-second timer, rock platform checkpoints with respawn on fall, cold spray and grappling hook gadgets, harness-based gadget grab, altitude tracking, and haptic feedback. Runs via PCVR (Quest Link) at 72\,fps.
 
-\paragraph{Beta Version.}
-% Describe the main functionality you plan to achieve and demonstrate.
+\paragraph{Beta Version (April 27).}
+The full game from base camp to summit across all three zones. All four gadgets functional. Route branching in Zone~2. Environmental hazards (falling rocks with warning cues, ice storms, wind). Complete audio pass (climbing sounds, gadget effects, ambient wind, checkpoint chimes). Player body IK with visible gear. Difficulty scaling with altitude. Performance-optimized for Quest~3.
 
 % -----------------------------------------------------------------
 \subsection{Development Schedule}
