@@ -58,7 +58,7 @@ IcePEAK is a first-person VR climbing game in which the player physically swings
 
 \textbf{Type of conflicts.} Player versus environment. The mountain itself is the antagonist: ice surfaces shatter roughly two seconds after an ice pick is planted, falling rocks threaten the climber, ice storms reduce visibility, and rock surfaces reject ice picks entirely.
 
-\textbf{Winning condition.} The player wins by reaching the summit platform at the top of the mountain. The player loses by falling below the last safe rock platform with no way to recover.
+\textbf{Winning condition.} The player wins by reaching the summit platform at the top of the mountain. The player respawns at nearest rock platform checkpoint when both hands lose support.
 
 \paragraph{Main rules and procedures.}
 
@@ -107,17 +107,44 @@ The game takes place on a single massive frozen mountain. The player can only mo
 \subsection{Worlds, Characters and Story}
 
 \subsubsection{Back Story}
-% If appropriate, how you will reveal this to the user.
+
+There is no traditional narrative cutscene. The player wakes at a base-camp ledge partway up the mountain with ice picks already in hand and a loaded harness. Scattered environmental details --- a torn flag, an abandoned tent half-buried in snow, scratched tally marks on a rock wall --- hint that others have attempted this climb before and failed. The story is the ascent itself: why the climber is here is left to the player's imagination; the only thing that matters is reaching the top.
+
+This minimal backstory is revealed passively through the environment rather than dialogue or text, keeping the player focused on the physical act of climbing.
 
 \subsubsection{Spaces/Worlds}
-% Include sketches of the worlds along with brief descriptions.
+
+The game takes place on a single massive frozen mountain divided into three altitude zones, each with a distinct visual identity and escalating difficulty:
+
+\begin{itemize}[leftmargin=2em]
+    \item \textbf{Zone 1 --- Lower Ice Field (base camp to ~30\% elevation).} Wide ice walls with generous spacing between rock platforms. Ice is thick and cracks slowly (closer to three seconds). Falling rocks are infrequent. Supply caches are common. This zone serves as the tutorial area where the player learns the core climbing loop and gadget usage.
+
+    \item \textbf{Zone 2 --- The Ridge (~30\%--70\% elevation).} Narrower climbing corridors, steeper overhangs, and longer gaps between safe platforms. Ice cracks at the standard two-second rate. Rockfall events become regular, and brief ice storms temporarily reduce visibility. Alternate routes diverge here, offering meaningful risk--reward choices.
+
+    \item \textbf{Zone 3 --- The Summit Push (~70\%--100\% elevation).} Near-vertical faces, extremely fragile ice (under two seconds), persistent wind that sways the player's view, and reduced visibility from blowing snow. Supply caches are rare. This zone demands precise gadget management and fast, confident climbing.
+\end{itemize}
+
+% TODO: Include sketches of each zone.
 
 \subsubsection{Characters}
-% Include sketches of all the characters along with brief descriptions
-% of their personalities and capabilities.
+
+There is one character: the player. IcePEAK is a solo first-person experience with no NPCs. The player sees their own hands gripping ice picks, a harness across their chest with gadget slots, and climbing gear on their body. The character has no spoken dialogue; the player's physical actions \emph{are} the character.
+
+% TODO: Include sketch of the player's first-person body view (hands, harness, gear).
 
 \subsubsection{Levels of Difficulty}
-% How will you vary the level of difficulty?
+
+Difficulty increases naturally with altitude rather than through a menu setting:
+
+\begin{itemize}[leftmargin=2em]
+    \item \textbf{Ice fragility} decreases with elevation --- holds last shorter before shattering.
+    \item \textbf{Distance between rock platforms} increases, requiring longer uninterrupted climbing stretches.
+    \item \textbf{Environmental hazards} become more frequent and intense (more rockfall, stronger wind, ice storms).
+    \item \textbf{Supply caches} become sparser, forcing the player to be more conservative with gadgets.
+    \item \textbf{Route complexity} increases --- paths branch more and include dead ends, overhangs, and traversals that require gadgets to pass.
+\end{itemize}
+
+This elevation-driven curve means the player never encounters an artificial difficulty screen; the mountain itself gets harder the higher they go.
 
 % -----------------------------------------------------------------
 \subsection{Interaction Models}
