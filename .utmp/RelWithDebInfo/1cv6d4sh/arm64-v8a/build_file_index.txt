@@ -1,0 +1,2 @@
+C:\Users\24112\OneDrive - PennO365\Penn\CIS 5680\IcePEAK\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary\src\main\cpp\CMakeLists.txt
+C:\Users\24112\OneDrive - PennO365\Penn\CIS 5680\IcePEAK\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary\src\main\cpp\GameActivity\CMakeLists.txt
