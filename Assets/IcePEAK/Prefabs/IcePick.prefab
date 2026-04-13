@@ -130,6 +130,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7312741294301033933}
   - component: {fileID: 4503363116309191966}
+  - component: {fileID: 5927139031591444332}
   m_Layer: 0
   m_Name: TipCollider
   m_TagString: Untagged
@@ -173,6 +174,20 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 11.83
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5927139031591444332
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7524537411699516079}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07e881c2c168b114786189a259e4e2d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SwingDetector
+  velocityFrameWindow: 5
+  embedVelocityThreshold: 1.5
 --- !u!1001 &3306357604357753160
 PrefabInstance:
   m_ObjectHideFlags: 0
