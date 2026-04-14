@@ -397,11 +397,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1299143454721797145, guid: 6e6ddcdd4016db14aaaa1f1f98667cde, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.0030390918
+      value: 0.0030390916
       objectReference: {fileID: 0}
     - target: {fileID: 1299143454721797145, guid: 6e6ddcdd4016db14aaaa1f1f98667cde, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.0030390918
+      value: 0.0030390916
       objectReference: {fileID: 0}
     - target: {fileID: 1299143454721797145, guid: 6e6ddcdd4016db14aaaa1f1f98667cde, type: 3}
       propertyPath: m_LocalPosition.x
@@ -648,10 +648,10 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 1717954561962503726, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
-      insertIndex: 1
+      insertIndex: 0
       addedObject: {fileID: 439001643}
     - targetCorrespondingSourceObject: {fileID: 1717954561962503726, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
-      insertIndex: 2
+      insertIndex: 1
       addedObject: {fileID: 21932141}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 1717954561962503725, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
@@ -771,6 +771,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   groundCheckDistance: 0.3
+  deadZone: 0.002
   locomotionProviders:
   - {fileID: 682209789}
   - {fileID: 1552155757}

@@ -73,7 +73,16 @@ public class IcePickController : MonoBehaviour
     // --- Physics-based follow ---
     private void FixedUpdate()
     {
-        if (_isEmbedded || controllerTarget == null) return;
+        if (_isEmbedded || controllerTarget == null)
+        {
+            // Kill any residual velocity while embedded
+            if (!_rb.isKinematic)
+            {
+                _rb.linearVelocity = Vector3.zero;
+                _rb.angularVelocity = Vector3.zero;
+            }
+            return;
+        }
 
         // Compute world-space target from controller + offset
         Vector3 targetPos = controllerTarget.TransformPoint(positionOffset);
@@ -152,8 +161,13 @@ public class IcePickController : MonoBehaviour
         _isEmbedded = true;
         _embedWorldPos = tipTransform.position;
 
-        // Freeze the pick in place — stop all physics movement
+        // Kill velocity BEFORE going kinematic to prevent residual drift
+        _rb.linearVelocity = Vector3.zero;
+        _rb.angularVelocity = Vector3.zero;
         _rb.isKinematic = true;
+
+        // Detach from XR Origin so climbing locomotion doesn't drag the pick
+        transform.SetParent(null, worldPositionStays: true);
 
         // Nudge into the surface slightly for visual sell
         transform.position += tipTransform.forward * embedDepth;
@@ -169,6 +183,9 @@ public class IcePickController : MonoBehaviour
         if (!_isEmbedded) return;
 
         _isEmbedded = false;
+
+        // Re-parent under XR Origin (FixedUpdate handles positioning via physics)
+        transform.SetParent(controllerTarget.root, worldPositionStays: true);
 
         // Resume physics-based following
         _rb.isKinematic = false;

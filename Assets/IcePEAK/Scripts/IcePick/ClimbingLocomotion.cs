@@ -13,6 +13,10 @@ public class ClimbingLocomotion : MonoBehaviour
     [Tooltip("Raycast distance below the XR Origin to detect ground")]
     [SerializeField] private float groundCheckDistance = 0.3f;
 
+    [Header("Climbing Tuning")]
+    [Tooltip("Controller movement below this (meters) is ignored — filters VR tracking noise")]
+    [SerializeField] private float deadZone = 0.002f;
+
     [Header("Default Locomotion Providers")]
     [Tooltip("Drag all locomotion provider components to disable while climbing (move, turn, teleport, etc.)")]
     [SerializeField] private MonoBehaviour[] locomotionProviders;
@@ -82,7 +86,19 @@ public class ClimbingLocomotion : MonoBehaviour
 
         // Average if both hands are climbing
         totalDelta /= activeHands;
+
+        // Ignore micro-movements from VR tracking noise
+        if (totalDelta.magnitude < deadZone)
+            return;
+
         xrOrigin.position += totalDelta;
+
+        // Move non-embedded picks with the rig — they're root objects now
+        // so they don't automatically move when XR Origin moves
+        if (!leftPick.IsEmbedded)
+            leftPick.transform.position += totalDelta;
+        if (!rightPick.IsEmbedded)
+            rightPick.transform.position += totalDelta;
     }
 
     private bool IsOnGround()
