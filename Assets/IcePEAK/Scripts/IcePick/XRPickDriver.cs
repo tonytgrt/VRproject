@@ -1,11 +1,11 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.LowLevel;
 
 /// <summary>
-/// Positions the ice pick directly from XR tracking data, at the same timing
-/// as TrackedPoseDriver (onAfterUpdate). No velocity chasing, no jitter.
-/// Disable this component when the pick is embedded; re-enable on release.
+/// Reads XR tracking data and stores it. Does NOT position the pick directly.
+/// IcePickController reads the stored target in FixedUpdate and drives the
+/// rigidbody via velocity so physics collisions with rock are respected.
+/// When the pick is embedded, disable this to stop updating the target.
 /// </summary>
 public class XRPickDriver : MonoBehaviour
 {
@@ -25,6 +25,10 @@ public class XRPickDriver : MonoBehaviour
 
     private Quaternion _rotOffsetQuat;
 
+    // Stored tracking-space data (does not change with XR Origin movement)
+    private Vector3 _trackingPos;
+    private Quaternion _trackingRot = Quaternion.identity;
+
     private void Awake()
     {
         _rotOffsetQuat = Quaternion.Euler(rotationOffset);
@@ -37,31 +41,38 @@ public class XRPickDriver : MonoBehaviour
         if (rotationAction != null && rotationAction.action != null)
             rotationAction.action.Enable();
 
-        InputSystem.onAfterUpdate += UpdatePose;
+        InputSystem.onAfterUpdate += ReadTrackingData;
     }
 
     private void OnDisable()
     {
-        InputSystem.onAfterUpdate -= UpdatePose;
+        InputSystem.onAfterUpdate -= ReadTrackingData;
     }
 
-    private void UpdatePose()
+    /// <summary>
+    /// Called by InputSystem at the same timing as TrackedPoseDriver.
+    /// Only READS and STORES tracking data — does not move the pick.
+    /// </summary>
+    private void ReadTrackingData()
     {
         if (positionAction == null || rotationAction == null) return;
 
-        // Read raw tracking data (same values the controller's TrackedPoseDriver reads)
-        Vector3 trackingPos = positionAction.action.ReadValue<Vector3>();
-        Quaternion trackingRot = rotationAction.action.ReadValue<Quaternion>();
+        _trackingPos = positionAction.action.ReadValue<Vector3>();
+        _trackingRot = rotationAction.action.ReadValue<Quaternion>();
+    }
 
-        // Convert from tracking space to world space via Camera Offset
-        // (this is what being a child of Camera Offset does implicitly)
-        Vector3 worldPos = cameraOffset.TransformPoint(trackingPos);
-        Quaternion worldRot = cameraOffset.rotation * trackingRot;
+    /// <summary>
+    /// Computes the current world-space target position and rotation
+    /// using the CURRENT Camera Offset transform. Call this in FixedUpdate
+    /// (after ClimbingLocomotion has moved the XR Origin) to get the correct target.
+    /// </summary>
+    public void GetWorldTarget(out Vector3 worldPos, out Quaternion worldRot)
+    {
+        worldPos = cameraOffset.TransformPoint(_trackingPos);
+        worldRot = cameraOffset.rotation * _trackingRot;
 
-        // Apply the grip offset (where the pick sits relative to the hand)
+        // Apply grip offset
         worldPos += worldRot * positionOffset;
         worldRot *= _rotOffsetQuat;
-
-        transform.SetPositionAndRotation(worldPos, worldRot);
     }
 }
