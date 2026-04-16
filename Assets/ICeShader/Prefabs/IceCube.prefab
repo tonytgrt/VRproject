@@ -140,9 +140,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BreakableIce
   breakTime: 2
-  crackDecalMaterial: {fileID: 2100000, guid: 41b139082c82005458195aa336638cd2, type: 2}
-  decalSize: {x: 0.3, y: 0.3, z: 0.5}
+  crackMaterial: {fileID: 2100000, guid: 9f9a04ec4132c6e418ee3b639494faf5, type: 2}
+  crackSize: {x: 0.8, y: 0.8}
+  surfaceOffset: 0.005
   sheetColumns: 2
   sheetRows: 2
   frameOrder: 
-  shatterPrefab: {fileID: 0}
+  shatterPrefab: {fileID: 53117777471620531, guid: db6d97390c0d62e43bf954ffb18fdd43, type: 3}
+  debugHitLocalPoint: {x: 0, y: 0, z: 0}
+  debugSurfaceNormal: {x: 0, y: 0, z: -1}
