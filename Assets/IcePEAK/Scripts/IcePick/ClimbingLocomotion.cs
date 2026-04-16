@@ -68,7 +68,6 @@ public class ClimbingLocomotion : MonoBehaviour
         {
             Vector3 currentPos = leftPick.ControllerTransform.position;
             totalDelta += _leftPrevPos - currentPos;
-            _leftPrevPos = currentPos;
             activeHands++;
         }
 
@@ -76,13 +75,19 @@ public class ClimbingLocomotion : MonoBehaviour
         {
             Vector3 currentPos = rightPick.ControllerTransform.position;
             totalDelta += _rightPrevPos - currentPos;
-            _rightPrevPos = currentPos;
             activeHands++;
         }
 
         // Average if both hands are climbing
         totalDelta /= activeHands;
         xrOrigin.position += totalDelta;
+
+        // Update prev positions AFTER moving the origin so they include
+        // the origin shift — this prevents the oscillation feedback loop
+        if (leftEmbedded)
+            _leftPrevPos = leftPick.ControllerTransform.position;
+        if (rightEmbedded)
+            _rightPrevPos = rightPick.ControllerTransform.position;
     }
 
     private bool IsOnGround()
