@@ -51,11 +51,34 @@ public class IcePickController : MonoBehaviour
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
-        _rb.isKinematic = true;
         _rb.useGravity = false;
 
         if (pickDriver == null)
             pickDriver = GetComponent<XRPickDriver>();
+    }
+
+    // --- Physics-based follow using XR tracking data ---
+    private void FixedUpdate()
+    {
+        if (_isEmbedded)
+        {
+            if (!_rb.isKinematic)
+            {
+                _rb.linearVelocity = Vector3.zero;
+                _rb.angularVelocity = Vector3.zero;
+            }
+            return;
+        }
+
+        // Get world-space target from XRPickDriver's stored tracking data
+        pickDriver.GetWorldTarget(out Vector3 targetPos, out Quaternion targetRot);
+
+        // Drive position via velocity (physics will block rock collisions)
+        _rb.linearVelocity = (targetPos - _rb.position) / Time.fixedDeltaTime;
+
+        // Set rotation directly
+        _rb.angularVelocity = Vector3.zero;
+        transform.rotation = targetRot;
     }
 
     private void OnEnable()
