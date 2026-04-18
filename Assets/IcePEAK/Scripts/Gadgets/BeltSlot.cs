@@ -38,7 +38,9 @@ namespace IcePEAK.Gadgets
             for (int i = 0; i < transform.childCount; i++)
             {
                 var child = transform.GetChild(i).gameObject;
-                if (placeholderRenderer != null && child.transform == placeholderRenderer.transform)
+                // Skip the placeholder subtree. Use IsChildOf so a placeholder nested deeper than
+                // a direct child is still recognized (IsChildOf returns true for self too).
+                if (placeholderRenderer != null && placeholderRenderer.transform.IsChildOf(child.transform))
                     continue;
                 HeldItem = child;
                 break;
@@ -92,6 +94,7 @@ namespace IcePEAK.Gadgets
                 else
                 {
                     mat.SetColor(EmissionColorID, Color.black);
+                    mat.DisableKeyword("_EMISSION");
                 }
             }
         }
