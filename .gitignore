@@ -7,6 +7,11 @@ DerivedDataCache/
 
 .claude/
 .idea/
+.superpowers/
+
+# Debug screenshots captured during development
+Assets/Screenshots/
+Assets/Screenshots.meta
 
 *.aux
 *.log
