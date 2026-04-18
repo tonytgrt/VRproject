@@ -25,8 +25,20 @@ namespace IcePEAK.Gadgets
         private void LateUpdate()
         {
             if (hmd == null) return;
-            // World-space yaw only — no pitch, no roll, no bobbing when looking up/down.
-            transform.rotation = Quaternion.Euler(0f, hmd.eulerAngles.y, 0f);
+            // Derive yaw from a flattened forward vector, not eulerAngles.y — the latter
+            // jitters/flips near pitch = ±90° (gimbal lock), which is common in ice climbing
+            // where the player looks straight up at a route or straight down at their feet.
+            Vector3 fwd = hmd.forward;
+            fwd.y = 0f;
+            if (fwd.sqrMagnitude < 1e-6f)
+            {
+                // Pure vertical gaze — fall back to the HMD's up vector (top of head points
+                // opposite of view direction when looking straight up/down).
+                fwd = hmd.up;
+                fwd.y = 0f;
+                if (fwd.sqrMagnitude < 1e-6f) return;
+            }
+            transform.rotation = Quaternion.LookRotation(fwd.normalized, Vector3.up);
         }
 
         /// <summary>
