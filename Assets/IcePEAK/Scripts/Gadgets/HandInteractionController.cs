@@ -5,8 +5,8 @@ namespace IcePEAK.Gadgets
 {
     /// <summary>
     /// Per-hand belt interaction controller. Priority order each frame:
-    ///   1. Pick embedded → pick owns trigger (we early-return, pick handles release).
-    ///   2. Trigger rising-edge + hand over a slot → swap/stow/draw.
+    ///   1. Pick embedded → climbing; skip belt/activate entirely.
+    ///   2. Grip rising-edge + hand over a slot → swap/stow/draw.
     ///   3. Trigger rising-edge + held item implements IActivatable → Activate().
     ///   4. Otherwise no-op.
     /// </summary>
@@ -19,13 +19,17 @@ namespace IcePEAK.Gadgets
         [SerializeField] private IcePickController pick;
 
         [Header("Input")]
-        [Tooltip("Same XRI Activate Value action the pick uses for release.")]
+        [Tooltip("Grip (XRI Select Value) — used to swap/stow/draw items at a belt slot.")]
+        [SerializeField] private InputActionReference gripAction;
+        [Tooltip("Trigger (XRI Activate Value) — used to Activate() the item held in this hand.")]
         [SerializeField] private InputActionReference triggerAction;
 
         public BeltSlot CurrentHoveredSlot { get; private set; }
 
         private void OnEnable()
         {
+            if (gripAction != null && gripAction.action != null)
+                gripAction.action.Enable();
             if (triggerAction != null && triggerAction.action != null)
                 triggerAction.action.Enable();
         }
@@ -42,21 +46,22 @@ namespace IcePEAK.Gadgets
                 if (CurrentHoveredSlot != null) CurrentHoveredSlot.SetHighlighted(true, handCell);
             }
 
-            // P1: pick embedded → pick's own Update handles trigger-to-release.
+            // P1: pick embedded → climbing; ignore belt/activate for this hand.
             if (pick != null && pick.IsEmbedded) return;
 
-            if (triggerAction == null || triggerAction.action == null) return;
-            if (!triggerAction.action.WasPressedThisFrame()) return;
-
-            // P2: hovered slot → swap/stow/draw.
-            if (CurrentHoveredSlot != null)
+            // P2: grip press + hovered slot → swap/stow/draw.
+            if (CurrentHoveredSlot != null &&
+                gripAction != null && gripAction.action != null &&
+                gripAction.action.WasPressedThisFrame())
             {
                 ResolveBeltAction(CurrentHoveredSlot);
                 return;
             }
 
-            // P3: held item implements IActivatable → Activate().
-            if (handCell.HeldItem != null &&
+            // P3: trigger press + held item implements IActivatable → Activate().
+            if (triggerAction != null && triggerAction.action != null &&
+                triggerAction.action.WasPressedThisFrame() &&
+                handCell.HeldItem != null &&
                 handCell.HeldItem.TryGetComponent<IActivatable>(out var activatable))
             {
                 Debug.Log($"[{name}] Activate -> {handCell.HeldItem.name}");
