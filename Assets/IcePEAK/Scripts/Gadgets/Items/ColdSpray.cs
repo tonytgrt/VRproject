@@ -16,6 +16,11 @@ namespace IcePEAK.Gadgets.Items
         [Header("Tunables")]
         [SerializeField] private float burstSeconds = 0.3f;
 
+        [Header("Hint")]
+        [SerializeField] private string displayName = "Cold Spray";
+
+        public string DisplayName => displayName;
+
         private bool _isPlaying;
 
         public void OnTransfer(CellKind from, CellKind to)

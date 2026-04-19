@@ -18,6 +18,11 @@ namespace IcePEAK.Gadgets.Items
         [SerializeField] private float streakLength = 1f;
         [SerializeField] private float streakDuration = 0.2f;
 
+        [Header("Hint")]
+        [SerializeField] private string displayName = "Grapple Gun";
+
+        public string DisplayName => displayName;
+
         private bool _isPlaying;
 
         public void OnTransfer(CellKind from, CellKind to)

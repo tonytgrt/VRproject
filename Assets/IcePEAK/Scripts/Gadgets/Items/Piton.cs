@@ -17,6 +17,11 @@ namespace IcePEAK.Gadgets.Items
         [SerializeField] private float plantDistance = 0.05f;
         [SerializeField] private float plantDuration = 0.2f;
 
+        [Header("Hint")]
+        [SerializeField] private string displayName = "Piton";
+
+        public string DisplayName => displayName;
+
         private bool _isPlaying;
 
         public void OnTransfer(CellKind from, CellKind to)
