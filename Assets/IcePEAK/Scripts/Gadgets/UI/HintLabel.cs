@@ -51,13 +51,12 @@ namespace IcePEAK.Gadgets.UI
             if (_hmd == null) _hmd = ResolveHmd();
             if (_hmd == null) return;
 
-            // Yaw-only billboard. Flatten the HMD→label vector onto the XZ plane so the
-            // label stays vertical when the player looks down at the belt and only yaws
-            // around world-up to track HMD position.
+            // Full look-at with world-up as the up reference: the card yaws to track HMD
+            // heading AND pitches up toward the HMD when viewed from above (standard when
+            // looking down at the belt), while its roll stays aligned to world-up.
             var dir = transform.position - _hmd.transform.position;
-            dir.y = 0f;
             if (dir.sqrMagnitude < 1e-6f) return;
-            transform.rotation = Quaternion.LookRotation(dir.normalized, Vector3.up);
+            transform.rotation = Quaternion.LookRotation(dir, Vector3.up);
         }
 
         private static Camera ResolveHmd()
