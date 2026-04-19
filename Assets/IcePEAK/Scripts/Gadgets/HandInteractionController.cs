@@ -37,9 +37,9 @@ namespace IcePEAK.Gadgets
             belt.TryGetNearestSlot(handCell.Anchor.position, out var nearest);
             if (nearest != CurrentHoveredSlot)
             {
-                if (CurrentHoveredSlot != null) CurrentHoveredSlot.SetHighlighted(false);
+                if (CurrentHoveredSlot != null) CurrentHoveredSlot.SetHighlighted(false, handCell);
                 CurrentHoveredSlot = nearest;
-                if (CurrentHoveredSlot != null) CurrentHoveredSlot.SetHighlighted(true);
+                if (CurrentHoveredSlot != null) CurrentHoveredSlot.SetHighlighted(true, handCell);
             }
 
             // P1: pick embedded → pick's own Update handles trigger-to-release.
@@ -92,7 +92,7 @@ namespace IcePEAK.Gadgets
             if (handItem != null) PlaceInto(slot,     handItem, CellKind.Hand);
 
             // Held item vs placeholder may have changed — re-evaluate highlight target.
-            slot.SetHighlighted(true);
+            slot.SetHighlighted(true, handCell);
         }
 
         private static void PlaceInto(ICell cell, GameObject item, CellKind from)
