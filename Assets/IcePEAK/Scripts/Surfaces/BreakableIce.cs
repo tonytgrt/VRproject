@@ -30,6 +30,10 @@ public class BreakableIce : MonoBehaviour
              "Small positive value prevents z-fighting with the ice face.")]
     [SerializeField] private float surfaceOffset = 0.005f;
 
+    [Tooltip("Grid subdivisions per axis used when conforming the crack mesh to the " +
+             "collider surface. Higher = smoother wrap around edges/corners.")]
+    [SerializeField] private int tessellation = 12;
+
     [Header("Sprite Sheet")]
     [Tooltip("Number of columns in the crack sprite sheet.")]
     [SerializeField] private int sheetColumns = 2;
@@ -126,7 +130,9 @@ public class BreakableIce : MonoBehaviour
     }
 
     /// <summary>
-    /// Spawns a textured quad facing along surfaceNormal, hovering just above the hit point.
+    /// Spawns a crack mesh that conforms to the collider surface. Vertices are projected
+    /// onto the collider via Collider.ClosestPoint, so the mesh folds around edges/corners
+    /// instead of extending into empty space past the face.
     /// </summary>
     private void SpawnCrackQuad(Vector3 worldPos, Vector3 surfaceNormal, IcePickController pick = null)
     {
@@ -136,18 +142,16 @@ public class BreakableIce : MonoBehaviour
             return;
         }
 
-        // Unity's built-in Quad faces +Z. Orient it so +Z aligns with the surface normal
-        // (pointing OUTWARD), so the textured front faces the viewer.
-        var go = GameObject.CreatePrimitive(PrimitiveType.Quad);
-        go.name = "CrackQuad";
-        Destroy(go.GetComponent<Collider>()); // don't interfere with physics
+        var go = new GameObject("CrackMesh");
+        go.transform.SetParent(transform, worldPositionStays: false);
+        go.transform.localPosition = Vector3.zero;
+        go.transform.localRotation = Quaternion.identity;
+        go.transform.localScale = Vector3.one;
 
-        go.transform.SetParent(transform, worldPositionStays: true);
-        go.transform.position = worldPos + surfaceNormal.normalized * surfaceOffset;
-        go.transform.rotation = Quaternion.LookRotation(-surfaceNormal); // quad's -Z faces surface, +Z faces viewer
-        go.transform.localScale = new Vector3(crackSize.x, crackSize.y, 1f);
+        var mf = go.AddComponent<MeshFilter>();
+        mf.sharedMesh = BuildConformingMesh(worldPos, surfaceNormal.normalized);
 
-        var renderer = go.GetComponent<MeshRenderer>();
+        var renderer = go.AddComponent<MeshRenderer>();
         renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         renderer.receiveShadows = false;
 
@@ -163,6 +167,86 @@ public class BreakableIce : MonoBehaviour
         });
 
         SetFrame(matInstance, 0);
+    }
+
+    /// <summary>
+    /// Builds a tessellated grid in the surface plane, then snaps each vertex onto the
+    /// collider surface. Points that would fall past an edge get projected onto the
+    /// neighboring face, so the resulting mesh bends around corners. Works for any
+    /// collider that implements ClosestPoint (Box/Sphere/Capsule/convex Mesh); other
+    /// colliders degrade to a flat quad.
+    /// </summary>
+    private Mesh BuildConformingMesh(Vector3 hitCenterWorld, Vector3 surfaceNormal)
+    {
+        var col = GetComponent<Collider>();
+        if (col == null) return null;
+
+        // Tangent basis spanning the local face plane.
+        Vector3 tangent = Vector3.Cross(surfaceNormal, Vector3.up);
+        if (tangent.sqrMagnitude < 1e-4f) tangent = Vector3.Cross(surfaceNormal, Vector3.right);
+        tangent.Normalize();
+        Vector3 bitangent = Vector3.Cross(surfaceNormal, tangent).normalized;
+
+        // Offset probe points well outside the collider. Collider.ClosestPoint returns
+        // the input unchanged when it's already inside the collider, so we need to
+        // approach from outside along the face normal to get a consistent snap.
+        float pushOutside = col.bounds.size.magnitude * 2f + 1f;
+        Vector3 colliderCenter = col.bounds.center;
+
+        int n = Mathf.Max(1, tessellation);
+        int sideVerts = n + 1;
+        var verts = new Vector3[sideVerts * sideVerts];
+        var uvs = new Vector2[sideVerts * sideVerts];
+        var tris = new int[n * n * 6];
+
+        for (int y = 0; y < sideVerts; y++)
+        {
+            for (int x = 0; x < sideVerts; x++)
+            {
+                float u = x / (float)n;
+                float v = y / (float)n;
+                Vector3 flatCenter = hitCenterWorld
+                                     + tangent * ((u - 0.5f) * crackSize.x)
+                                     + bitangent * ((v - 0.5f) * crackSize.y);
+                Vector3 probe = flatCenter + surfaceNormal * pushOutside;
+                Vector3 snapped = col.ClosestPoint(probe);
+
+                // Push off the surface along the outward direction from the collider
+                // centre — matches the face normal on flat regions and bisects at
+                // edges/corners, giving a uniform small surfaceOffset.
+                Vector3 outward = snapped - colliderCenter;
+                if (outward.sqrMagnitude < 1e-6f) outward = surfaceNormal;
+                else outward.Normalize();
+
+                Vector3 world = snapped + outward * surfaceOffset;
+                // Store in the cube's local space so the mesh tracks rotation/scale.
+                verts[y * sideVerts + x] = transform.InverseTransformPoint(world);
+                uvs[y * sideVerts + x] = new Vector2(u, v);
+            }
+        }
+
+        int ti = 0;
+        for (int y = 0; y < n; y++)
+        {
+            for (int x = 0; x < n; x++)
+            {
+                int i0 = y * sideVerts + x;
+                int i1 = i0 + 1;
+                int i2 = i0 + sideVerts;
+                int i3 = i2 + 1;
+                // Winding so (v1-v0) × (v2-v0) points outward.
+                tris[ti++] = i0; tris[ti++] = i1; tris[ti++] = i2;
+                tris[ti++] = i1; tris[ti++] = i3; tris[ti++] = i2;
+            }
+        }
+
+        var m = new Mesh { name = "CrackConformingMesh" };
+        m.vertices = verts;
+        m.uv = uvs;
+        m.triangles = tris;
+        m.RecalculateNormals();
+        m.RecalculateBounds();
+        return m;
     }
 
     private void Update()
