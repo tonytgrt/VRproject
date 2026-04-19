@@ -690,15 +690,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 202364687, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 592248217}
-    - targetCorrespondingSourceObject: {fileID: 202364687, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 592248216}
     - targetCorrespondingSourceObject: {fileID: 1670256624, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1882520190}
-    - targetCorrespondingSourceObject: {fileID: 1670256624, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1882520189}
   m_SourcePrefab: {fileID: 100100000, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
 --- !u!4 &441087507 stripped
 Transform:
@@ -721,27 +715,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 202364687, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
   m_PrefabInstance: {fileID: 441087506}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &592248216
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 592248211}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c0b55aea5e2cb84b9bc4b6e663e1436, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::IcePEAK.Gadgets.HandInteractionDebugVisualizer
-  handCell: {fileID: 1331941238}
-  belt: {fileID: 6790451438804936751}
-  handController: {fileID: 592248217}
-  debugEnabled: 1
-  approachRadius: 0.3
-  activeColor: {r: 0.2, g: 1, b: 0.3, a: 1}
-  approachColor: {r: 1, g: 1, b: 1, a: 0.5}
-  activeWidth: 0.004
-  approachWidth: 0.0015
 --- !u!114 &592248217
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1315,27 +1288,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1670256625, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
   m_PrefabInstance: {fileID: 441087506}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1882520189
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 172496437}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c0b55aea5e2cb84b9bc4b6e663e1436, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::IcePEAK.Gadgets.HandInteractionDebugVisualizer
-  handCell: {fileID: 1822494296}
-  belt: {fileID: 6790451438804936751}
-  handController: {fileID: 1882520190}
-  debugEnabled: 1
-  approachRadius: 0.3
-  activeColor: {r: 0.2, g: 1, b: 0.3, a: 1}
-  approachColor: {r: 1, g: 1, b: 1, a: 0.5}
-  activeWidth: 0.004
-  approachWidth: 0.0015
 --- !u!114 &1882520190
 MonoBehaviour:
   m_ObjectHideFlags: 0
