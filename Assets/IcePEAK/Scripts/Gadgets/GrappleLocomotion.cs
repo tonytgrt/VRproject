@@ -32,6 +32,9 @@ namespace IcePEAK.Gadgets
         [SerializeField] private float zipDuration = 2.0f;
         [Tooltip("Meters to stop the gun's nozzle short of the surface along the rope line. Keep small so the off-hand can reach the wall with an ice pick.")]
         [SerializeField] private float surfaceOffset = 0.1f;
+        [Range(0f, 1f)]
+        [Tooltip("Fraction of the rope distance that must be traveled before an ice pick embed is allowed to end the zip early. Guards against a pick that was already swinging at fire time clipping a nearby wall and canceling the zip immediately.")]
+        [SerializeField] private float embedArmFraction = 0.8f;
 
         public bool IsZipping => _isZipping;
 
@@ -77,18 +80,39 @@ namespace IcePEAK.Gadgets
                 : anchor;
             // Translate xrOrigin by the delta that brings pullPoint to nozzleLanding.
             Vector3 end = start + (nozzleLanding - pullPoint);
+            float totalDist = Vector3.Distance(start, end);
             float elapsed = 0f;
 
             while (elapsed < zipDuration)
             {
-                // End the zip the instant the off-hand swings a pick into the
-                // arriving surface — the player is now anchored, so handing
-                // control to ClimbingLocomotion mid-flight feels more responsive
-                // than forcing them to wait for the zip timer to finish.
-                if ((leftPick != null && leftPick.IsEmbedded) ||
-                    (rightPick != null && rightPick.IsEmbedded))
+                // Arm pick-based early-out only after the rig has traveled far
+                // enough. Without this, a pick that was already mid-swing at
+                // fire time can clip a nearby wall and cancel the zip before
+                // the player has gone anywhere.
+                float progress = totalDist > 1e-4f
+                    ? Vector3.Distance(start, xrOrigin.position) / totalDist
+                    : 1f;
+                bool embedArmed = progress >= embedArmFraction;
+
+                bool leftEmbedded = leftPick != null && leftPick.IsEmbedded;
+                bool rightEmbedded = rightPick != null && rightPick.IsEmbedded;
+
+                if (embedArmed && (leftEmbedded || rightEmbedded))
                 {
+                    // End the zip the instant the off-hand swings a pick into
+                    // the arriving surface — the player is now anchored, so
+                    // handing control to ClimbingLocomotion mid-flight feels
+                    // more responsive than waiting for the zip timer.
                     break;
+                }
+
+                if (!embedArmed)
+                {
+                    // Premature embed during the lockout — release so the pick
+                    // doesn't stay stuck in a wall we'll fly past and then
+                    // yank us backward once ClimbingLocomotion re-enables.
+                    if (leftEmbedded) leftPick.Release();
+                    if (rightEmbedded) rightPick.Release();
                 }
 
                 // Constant-speed travel toward the landing. Once we arrive, the
