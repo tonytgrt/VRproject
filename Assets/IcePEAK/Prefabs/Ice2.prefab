@@ -66,7 +66,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: b6cb31ebbe72aa446bf87b64d519079b, type: 2}
     - target: {fileID: 919132149155446097, guid: f56b6749713a4304188032a416015e43, type: 3}
       propertyPath: m_Name
-      value: IceAsteroid9
+      value: Ice2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -78,6 +78,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f56b6749713a4304188032a416015e43, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6631482265491431340}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f56b6749713a4304188032a416015e43, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 372489606498645691}
   m_SourcePrefab: {fileID: 100100000, guid: f56b6749713a4304188032a416015e43, type: 3}
 --- !u!1 &3028160484017557096 stripped
 GameObject:
@@ -127,3 +130,16 @@ MonoBehaviour:
   shatterPrefab: {fileID: 53117777471620531, guid: 7b3eb0775db90fd46897a8de7b88c596, type: 3}
   debugHitLocalPoint: {x: 0, y: 0, z: 0}
   debugSurfaceNormal: {x: 0, y: 0, z: -1}
+--- !u!114 &372489606498645691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3028160484017557096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e69d282f63a972041af20d06d8cb692e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SurfaceTag
+  surfaceType: 0

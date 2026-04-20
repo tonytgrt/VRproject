@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 706875931626419935}
   - component: {fileID: 8351462543203748474}
   - component: {fileID: 3195882011828495667}
+  - component: {fileID: 3816583399745823610}
   m_Layer: 0
   m_Name: Ice1
   m_TagString: Untagged
@@ -135,3 +136,16 @@ MonoBehaviour:
   shatterPrefab: {fileID: 53117777471620531, guid: 7b3eb0775db90fd46897a8de7b88c596, type: 3}
   debugHitLocalPoint: {x: 0, y: 0, z: 0}
   debugSurfaceNormal: {x: 0, y: 0, z: -1}
+--- !u!114 &3816583399745823610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1355495089131099914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e69d282f63a972041af20d06d8cb692e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SurfaceTag
+  surfaceType: 0

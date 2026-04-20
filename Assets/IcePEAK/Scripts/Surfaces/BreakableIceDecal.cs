@@ -44,6 +44,7 @@ public class BreakableIceDecal : MonoBehaviour
         public Material materialInstance;
         public float timer;
         public int lastCellIndex;
+        public IcePickController pick;
     }
 
     private void OnEnable()
@@ -67,7 +68,7 @@ public class BreakableIceDecal : MonoBehaviour
             return;
 
         SnapToNearestFace(pick.EmbedWorldPosition, out Vector3 surfacePoint, out Vector3 surfaceNormal);
-        SpawnCrackDecal(surfacePoint, surfaceNormal);
+        SpawnCrackDecal(surfacePoint, surfaceNormal, pick);
     }
 
     private void SnapToNearestFace(Vector3 worldPoint, out Vector3 surfacePoint, out Vector3 outwardNormal)
@@ -103,7 +104,7 @@ public class BreakableIceDecal : MonoBehaviour
         }
     }
 
-    private void SpawnCrackDecal(Vector3 worldPos, Vector3 surfaceNormal)
+    private void SpawnCrackDecal(Vector3 worldPos, Vector3 surfaceNormal, IcePickController pick = null)
     {
         if (crackDecalMaterial == null)
         {
@@ -131,6 +132,7 @@ public class BreakableIceDecal : MonoBehaviour
             materialInstance = projector.material,
             timer = 0f,
             lastCellIndex = -1,
+            pick = pick,
         };
         _cracks.Add(instance);
 
@@ -149,6 +151,11 @@ public class BreakableIceDecal : MonoBehaviour
 
             foreach (var crack in _cracks)
             {
+                // Only advance the timer while a pick is still embedded in this
+                // ice. Releasing the pick pauses cracking at its current frame.
+                if (crack.pick != null && !crack.pick.IsEmbedded)
+                    continue;
+
                 crack.timer += Time.deltaTime;
                 float t = Mathf.Clamp01(crack.timer / breakTime);
 
@@ -229,6 +236,14 @@ public class BreakableIceDecal : MonoBehaviour
     {
         if (_isBroken) return;
         _isBroken = true;
+
+        // Release any picks still embedded in this ice so they return to the
+        // player's hand instead of being stranded in mid-air when we destroy it.
+        foreach (var crack in _cracks)
+        {
+            if (crack.pick != null && crack.pick.IsEmbedded)
+                crack.pick.Release();
+        }
 
         if (shatterPrefab != null)
             Instantiate(shatterPrefab, transform.position, transform.rotation);
