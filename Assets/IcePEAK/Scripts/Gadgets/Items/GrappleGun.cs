@@ -38,6 +38,12 @@ namespace IcePEAK.Gadgets.Items
 
         public string DisplayName => displayName;
 
+        /// Invoked when the gun embeds in an ice surface during grapple.
+        public System.Action<GrappleGun, SurfaceTag> OnEmbedded;
+
+        /// Invoked when the gun is released from an embedded state.
+        public System.Action<GrappleGun> OnReleased;
+
         private bool _isStowed = true;
         private bool _isZipping;
         private bool _isDryFiring;

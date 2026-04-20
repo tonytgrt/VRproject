@@ -112,7 +112,7 @@ public class IcePickController : MonoBehaviour, IHoldable
     }
 
     // --- Embed ---
-    private void Embed(SurfaceTag surface)
+    public void Embed(SurfaceTag surface)
     {
         _isEmbedded = true;
 
