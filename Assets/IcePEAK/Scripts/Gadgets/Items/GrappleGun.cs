@@ -78,6 +78,11 @@ namespace IcePEAK.Gadgets.Items
                 if (!_locomotion.StartZip(_zipAnchor, barrelTip.position, OnArrival)) return;
 
                 _isZipping = true;
+                // Hide the aim laser for the duration of the zip — Update()
+                // early-returns while zipping, so without this the laser stays
+                // frozen at its pre-fire positions (a stale line from the old
+                // barrel position to the anchor).
+                if (laser != null) laser.enabled = false;
                 if (rope != null)
                 {
                     rope.positionCount = 2;
