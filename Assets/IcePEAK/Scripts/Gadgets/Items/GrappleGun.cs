@@ -148,6 +148,7 @@ namespace IcePEAK.Gadgets.Items
 
         private void OnArrival()
         {
+            _isZipping = false;
             if (rope != null) rope.enabled = false;
             // Gun stays in the hand — infinite uses for now. Update() will
             // resume the laser preview on the next frame.
