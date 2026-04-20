@@ -26,8 +26,8 @@ namespace IcePEAK.Gadgets
         [SerializeField] private MonoBehaviour[] locomotionProviders;
 
         [Header("Tunables")]
-        [Tooltip("Seconds to travel from fire to arrival. Longer = more time for the off-hand to swing an ice pick into the arriving surface.")]
-        [SerializeField] private float zipDuration = 1.0f;
+        [Tooltip("Maximum seconds from fire to arrival. The zip ends early the moment an ice pick embeds, so this is the cap the off-hand has to land a swing before the rig snaps to the anchor.")]
+        [SerializeField] private float zipDuration = 2.0f;
         [Tooltip("Meters to stop the gun's nozzle short of the surface along its normal. Keep small so the off-hand can reach the wall with an ice pick.")]
         [SerializeField] private float surfaceOffset = 0.1f;
         [SerializeField] private AnimationCurve zipEase = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
@@ -77,16 +77,31 @@ namespace IcePEAK.Gadgets
             // Translate xrOrigin by the delta that brings pullPoint to nozzleLanding.
             Vector3 end = start + (nozzleLanding - pullPoint);
             float elapsed = 0f;
+            bool interrupted = false;
 
             while (elapsed < zipDuration)
             {
+                // End the zip the instant the off-hand swings a pick into the
+                // arriving surface — the player is now anchored, so handing
+                // control to ClimbingLocomotion mid-flight feels more responsive
+                // than forcing them to wait for the zip timer to finish.
+                if ((leftPick != null && leftPick.IsEmbedded) ||
+                    (rightPick != null && rightPick.IsEmbedded))
+                {
+                    interrupted = true;
+                    break;
+                }
+
                 float t = elapsed / zipDuration;
                 float eased = zipEase.Evaluate(t);
                 xrOrigin.position = Vector3.LerpUnclamped(start, end, eased);
                 elapsed += Time.deltaTime;
                 yield return null;
             }
-            xrOrigin.position = end;
+            // Only snap to the planned landing if the zip ran to completion.
+            // If a pick embedded mid-flight, the rig stays where it is — the
+            // pick is the new anchor and ClimbingLocomotion takes over.
+            if (!interrupted) xrOrigin.position = end;
 
             SetLocomotionProviders(true);
 
