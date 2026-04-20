@@ -26,11 +26,12 @@ namespace IcePEAK.Gadgets
         [SerializeField] private MonoBehaviour[] locomotionProviders;
 
         [Header("Tunables")]
-        [Tooltip("Maximum seconds from fire to arrival. The zip ends early the moment an ice pick embeds, so this is the cap the off-hand has to land a swing before the rig snaps to the anchor.")]
+        [Tooltip("Constant travel speed during the zip (m/s). The rig moves toward the anchor at this speed regardless of rope length, so long and short grapples feel the same.")]
+        [SerializeField] private float zipSpeed = 20f;
+        [Tooltip("Total seconds the grappled state lasts. The rig travels to the landing at zipSpeed, then hangs there until this timer expires (or until an ice pick embeds).")]
         [SerializeField] private float zipDuration = 2.0f;
-        [Tooltip("Meters to stop the gun's nozzle short of the surface along its normal. Keep small so the off-hand can reach the wall with an ice pick.")]
+        [Tooltip("Meters to stop the gun's nozzle short of the surface along the rope line. Keep small so the off-hand can reach the wall with an ice pick.")]
         [SerializeField] private float surfaceOffset = 0.1f;
-        [SerializeField] private AnimationCurve zipEase = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
 
         public bool IsZipping => _isZipping;
 
@@ -77,7 +78,6 @@ namespace IcePEAK.Gadgets
             // Translate xrOrigin by the delta that brings pullPoint to nozzleLanding.
             Vector3 end = start + (nozzleLanding - pullPoint);
             float elapsed = 0f;
-            bool interrupted = false;
 
             while (elapsed < zipDuration)
             {
@@ -88,20 +88,26 @@ namespace IcePEAK.Gadgets
                 if ((leftPick != null && leftPick.IsEmbedded) ||
                     (rightPick != null && rightPick.IsEmbedded))
                 {
-                    interrupted = true;
                     break;
                 }
 
-                float t = elapsed / zipDuration;
-                float eased = zipEase.Evaluate(t);
-                xrOrigin.position = Vector3.LerpUnclamped(start, end, eased);
+                // Constant-speed travel toward the landing. Once we arrive, the
+                // rig hangs at the anchor for the remaining duration so the
+                // off-hand still has time to land a swing even on short ropes.
+                Vector3 toEnd = end - xrOrigin.position;
+                float stepDist = zipSpeed * Time.deltaTime;
+                if (toEnd.sqrMagnitude <= stepDist * stepDist)
+                {
+                    xrOrigin.position = end;
+                }
+                else
+                {
+                    xrOrigin.position += toEnd.normalized * stepDist;
+                }
+
                 elapsed += Time.deltaTime;
                 yield return null;
             }
-            // Only snap to the planned landing if the zip ran to completion.
-            // If a pick embedded mid-flight, the rig stays where it is — the
-            // pick is the new anchor and ClimbingLocomotion takes over.
-            if (!interrupted) xrOrigin.position = end;
 
             SetLocomotionProviders(true);
 
