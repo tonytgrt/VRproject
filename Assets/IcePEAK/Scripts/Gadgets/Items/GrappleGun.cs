@@ -72,29 +72,28 @@ namespace IcePEAK.Gadgets.Items
             if (_isStowed || _isZipping || _isDryFiring) return;
             if (barrelTip == null) return;
 
-            if (!TryResolveLocomotion()) { StartDryFire(); return; }
-            if (_locomotion.IsZipping) return;
+            if (!TryResolveLocomotion())
+            {
+                Debug.LogWarning("[GrappleGun] GrappleLocomotion not found in scene — dry-firing.");
+                StartDryFire();
+                return;
+            }
 
             if (Physics.Raycast(barrelTip.position, barrelTip.forward, out RaycastHit hit,
                                 maxRange, hitMask, QueryTriggerInteraction.Ignore)
                 && hit.collider.GetComponentInParent<SurfaceTag>() != null)
             {
                 _zipAnchor = hit.point;
+
+                if (!_locomotion.StartZip(_zipAnchor, hit.normal, OnArrival)) return;
+
+                _isZipping = true;
                 if (rope != null)
                 {
                     rope.positionCount = 2;
                     rope.SetPosition(0, barrelTip.position);
                     rope.SetPosition(1, _zipAnchor);
                     rope.enabled = true;
-                }
-
-                if (_locomotion.StartZip(_zipAnchor, hit.normal, OnArrival))
-                {
-                    _isZipping = true;
-                }
-                else
-                {
-                    if (rope != null) rope.enabled = false;
                 }
             }
             else
