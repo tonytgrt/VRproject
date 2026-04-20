@@ -97,13 +97,43 @@ namespace IcePEAK.Gadgets.Items
             }
         }
 
-        private void Update()
+        // All line-renderer updates run in LateUpdate so they see the final
+        // barrel pose for the frame. XR controller tracking and the climbing /
+        // grapple locomotion providers move the rig in Update, so setting
+        // world-space LineRenderer positions in Update leaves the line one
+        // frame behind — it shows up as a fixed offset between the nozzle and
+        // the laser origin whenever the rig is in motion.
+        private void LateUpdate()
         {
-            if (_isStowed || _isZipping || _isDryFiring) return;
-            if (laser == null || barrelTip == null) return;
+            if (barrelTip == null) return;
+
+            if (rope != null && _isZipping)
+            {
+                rope.SetPosition(0, barrelTip.position);
+                rope.SetPosition(1, _zipAnchor);
+            }
+
+            if (laser == null) return;
+
+            if (_isStowed || _isZipping)
+            {
+                laser.enabled = false;
+                return;
+            }
 
             Vector3 origin = barrelTip.position;
             Vector3 dir = barrelTip.forward;
+
+            if (_isDryFiring)
+            {
+                laser.positionCount = 2;
+                laser.SetPosition(0, origin);
+                laser.SetPosition(1, origin + dir * maxRange);
+                laser.startColor = laserOutOfRangeColor;
+                laser.endColor = laserOutOfRangeColor;
+                laser.enabled = true;
+                return;
+            }
 
             bool validHit = Physics.Raycast(origin, dir, out RaycastHit hit,
                                             maxRange, hitMask, QueryTriggerInteraction.Ignore)
@@ -120,13 +150,6 @@ namespace IcePEAK.Gadgets.Items
             laser.enabled = true;
         }
 
-        private void LateUpdate()
-        {
-            if (!_isZipping || rope == null || barrelTip == null) return;
-            rope.SetPosition(0, barrelTip.position);
-            rope.SetPosition(1, _zipAnchor);
-        }
-
         private void StartDryFire()
         {
             StartCoroutine(DryFireFlash());
@@ -135,19 +158,7 @@ namespace IcePEAK.Gadgets.Items
         private IEnumerator DryFireFlash()
         {
             _isDryFiring = true;
-
-            if (laser != null && barrelTip != null)
-            {
-                laser.positionCount = 2;
-                laser.SetPosition(0, barrelTip.position);
-                laser.SetPosition(1, barrelTip.position + barrelTip.forward * maxRange);
-                laser.startColor = laserOutOfRangeColor;
-                laser.endColor = laserOutOfRangeColor;
-                laser.enabled = true;
-            }
-
             yield return new WaitForSeconds(dryFireDuration);
-
             _isDryFiring = false;
         }
 
