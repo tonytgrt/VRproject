@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Inputs.Haptics;
 using IcePEAK.Gadgets;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -18,6 +19,14 @@ public class IcePickController : MonoBehaviour, IHoldable
     [Header("Embed Settings")]
     [Tooltip("How deep the pick tip sinks into the surface on embed (meters)")]
     [SerializeField] private float embedDepth = 0.03f;
+
+    [Header("Haptics")]
+    [Tooltip("HapticImpulsePlayer on this hand's controller — sends vibration on embed/bounce.")]
+    [SerializeField] private HapticImpulsePlayer hapticPlayer;
+    [SerializeField, Range(0f, 1f)] private float embedHapticAmplitude = 0.8f;
+    [SerializeField] private float embedHapticDuration = 0.15f;
+    [SerializeField, Range(0f, 1f)] private float bounceHapticAmplitude = 0.4f;
+    [SerializeField] private float bounceHapticDuration = 0.08f;
 
     [Header("Input")]
     [Tooltip("Trigger (activate) action for this hand — use XRI > Activate Value")]
@@ -53,6 +62,18 @@ public class IcePickController : MonoBehaviour, IHoldable
         _controllerParent = transform.parent;
         _localPosInParent = transform.localPosition;
         _localRotInParent = transform.localRotation;
+
+        // Auto-load embed clip from Assets/IcePEAK/Resources/breakIce.mp3 if not assigned.
+        if (embedSound == null)
+            embedSound = Resources.Load<AudioClip>("breakIce");
+
+        // Auto-create a 3D AudioSource on the pick if none was wired up.
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource.playOnAwake = false;
+            audioSource.spatialBlend = 1f;
+        }
     }
 
     private void OnEnable()
@@ -126,7 +147,8 @@ public class IcePickController : MonoBehaviour, IHoldable
         // Nudge the pick slightly into the surface for visual sell
         transform.position += tipTransform.forward * embedDepth;
 
-        // TODO: audio (assign audioSource and clips in Inspector first)
+        PlayClip(embedSound);
+        SendHaptic(embedHapticAmplitude, embedHapticDuration);
 
         Debug.Log($"[IcePick {gameObject.name}] Embedded at {_embedWorldPos}");
 
@@ -136,7 +158,20 @@ public class IcePickController : MonoBehaviour, IHoldable
     // --- Bounce ---
     private void Bounce(SurfaceType type)
     {
-        // TODO: audio
+        PlayClip(bounceSound);
+        SendHaptic(bounceHapticAmplitude, bounceHapticDuration);
+    }
+
+    private void PlayClip(AudioClip clip)
+    {
+        if (clip == null || audioSource == null) return;
+        audioSource.PlayOneShot(clip);
+    }
+
+    private void SendHaptic(float amplitude, float duration)
+    {
+        if (hapticPlayer == null || amplitude <= 0f || duration <= 0f) return;
+        hapticPlayer.SendHapticImpulse(amplitude, duration);
     }
 
     // --- Release ---
