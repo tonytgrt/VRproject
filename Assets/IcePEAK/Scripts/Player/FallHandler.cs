@@ -15,6 +15,7 @@ namespace IcePEAK.Player
         [SerializeField] private Transform xrOrigin;
         [Tooltip("HMD (main) camera. Used so the player's head lands on the spawn point regardless of in-room offset.")]
         [SerializeField] private Transform xrCamera;
+        [Tooltip("Initial spawn point. Checkpoints reached at runtime override this via SetCheckpoint().")]
         [SerializeField] private Transform spawnPoint;
         [SerializeField] private ScreenFader fader;
         [SerializeField] private IcePickController leftPick;
@@ -41,6 +42,23 @@ namespace IcePEAK.Player
 
         private float _airborneTime;
         private bool _respawning;
+        private Transform _currentSpawnPoint;
+
+        /// <summary>
+        /// Switch the active respawn target. Called by Checkpoint triggers when
+        /// the player reaches a new checkpoint. Subsequent respawns will use
+        /// this point instead of the original spawnPoint.
+        /// </summary>
+        public void SetCheckpoint(Transform checkpoint)
+        {
+            if (checkpoint == null) return;
+            _currentSpawnPoint = checkpoint;
+        }
+
+        private void Awake()
+        {
+            _currentSpawnPoint = spawnPoint;
+        }
 
         private void Start()
         {
@@ -119,7 +137,8 @@ namespace IcePEAK.Player
 
         private void TeleportToSpawn()
         {
-            if (xrOrigin == null || spawnPoint == null) return;
+            Transform target = _currentSpawnPoint != null ? _currentSpawnPoint : spawnPoint;
+            if (xrOrigin == null || target == null) return;
 
             // Offset the rig so the HMD ends up at the spawn point, regardless
             // of where the player is standing in their physical playspace.
@@ -128,13 +147,13 @@ namespace IcePEAK.Player
             {
                 Vector3 camOffset = xrCamera.position - xrOrigin.position;
                 camOffset.y = 0f;
-                Vector3 target = spawnPoint.position - camOffset;
-                target.y = spawnPoint.position.y;
-                xrOrigin.position = target;
+                Vector3 dest = target.position - camOffset;
+                dest.y = target.position.y;
+                xrOrigin.position = dest;
             }
             else
             {
-                xrOrigin.position = spawnPoint.position;
+                xrOrigin.position = target.position;
             }
         }
     }
