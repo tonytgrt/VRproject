@@ -1,2 +1,14 @@
 fileFormatVersion: 2
 guid: 3aeeae6c940ba0e49904378a8ae38ac5
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - crackDecalMaterial: {instanceID: 0}
+  - shatterPrefab: {instanceID: 0}
+  - warningSound: {fileID: 8300000, guid: 7e0c068780945f94d885cbdbefe75ca0, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

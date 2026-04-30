@@ -46,8 +46,15 @@ public class BreakableIce : MonoBehaviour
     [Tooltip("Optional prefab spawned on shatter (VFX / shattered mesh).")]
     [SerializeField] private GameObject shatterPrefab;
 
+    [Header("Audio")]
+    [Tooltip("Sound played once when the ice is close to breaking.")]
+    [SerializeField] private AudioClip warningSound;
+    [Tooltip("How far through the break timer (0–1) to play the warning sound.")]
+    [SerializeField, Range(0f, 1f)] private float warnAtProgress = 0.75f;
+
     private readonly List<CrackInstance> _cracks = new();
     private bool _isBroken;
+    private bool _warningSoundPlayed;
     private static Dictionary<IcePickController, BreakableIce> _pickEmbedMap = new();
 
     private class CrackInstance
@@ -306,6 +313,12 @@ public class BreakableIce : MonoBehaviour
 
                 crack.timer += Time.deltaTime;
                 float t = Mathf.Clamp01(crack.timer / breakTime);
+
+                if (!_warningSoundPlayed && t >= warnAtProgress && warningSound != null)
+                {
+                    _warningSoundPlayed = true;
+                    AudioSource.PlayClipAtPoint(warningSound, transform.position);
+                }
 
                 int step = Mathf.Min(totalFrames - 1, Mathf.FloorToInt(t * totalFrames));
                 int cellIndex = frameOrder != null && frameOrder.Length > 0

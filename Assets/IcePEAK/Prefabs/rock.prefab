@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &8133568583222395723
+--- !u!1 &2678989513159316369
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,26 +8,25 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4826896890262584986}
-  - component: {fileID: 7535280598776963272}
-  - component: {fileID: 2083955612249276466}
-  - component: {fileID: 8978501896562230438}
-  - component: {fileID: 8381412260813968519}
-  - component: {fileID: 2539369854215132169}
+  - component: {fileID: 9109010375446883542}
+  - component: {fileID: 5226025947020115476}
+  - component: {fileID: 1092697405674849161}
+  - component: {fileID: -619948551260665853}
+  - component: {fileID: -1750390653619237212}
   m_Layer: 0
-  m_Name: snow1
+  m_Name: rock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4826896890262584986
+--- !u!4 &9109010375446883542
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8133568583222395723}
+  m_GameObject: {fileID: 2678989513159316369}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -36,21 +35,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &7535280598776963272
+--- !u!33 &5226025947020115476
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8133568583222395723}
-  m_Mesh: {fileID: 4608400834802306442, guid: 561d92f7c747dbf459587e03e0c9dbd1, type: 3}
---- !u!23 &2083955612249276466
+  m_GameObject: {fileID: 2678989513159316369}
+  m_Mesh: {fileID: -8055050089313812744, guid: 561d92f7c747dbf459587e03e0c9dbd1, type: 3}
+--- !u!23 &1092697405674849161
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8133568583222395723}
+  m_GameObject: {fileID: 2678989513159316369}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -93,61 +92,46 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &8978501896562230438
-MeshCollider:
+--- !u!54 &-619948551260665853
+Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8133568583222395723}
-  m_Material: {fileID: 0}
+  m_GameObject: {fileID: 2678989513159316369}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4608400834802306442, guid: 561d92f7c747dbf459587e03e0c9dbd1, type: 3}
---- !u!114 &8381412260813968519
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &-1750390653619237212
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8133568583222395723}
+  m_GameObject: {fileID: 2678989513159316369}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3aeeae6c940ba0e49904378a8ae38ac5, type: 3}
+  m_Script: {fileID: 11500000, guid: 030a827e60deb0f459ce4d428707150e, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BreakableIceDecal
-  breakTime: 6
-  crackDecalMaterial: {fileID: 2100000, guid: 41b139082c82005458195aa336638cd2, type: 2}
-  decalSize: {x: 0.5, y: 0.5, z: 1}
-  sheetColumns: 2
-  sheetRows: 2
-  frameOrder: 
-  shatterPrefab: {fileID: 53117777471620531, guid: 7b3eb0775db90fd46897a8de7b88c596, type: 3}
-  warningSound: {fileID: 8300000, guid: 7e0c068780945f94d885cbdbefe75ca0, type: 3}
-  warnAtProgress: 0.8
-  debugHitLocalPoint: {x: 0, y: 0, z: 0}
-  debugSurfaceNormal: {x: 0, y: 0, z: 1}
---- !u!114 &2539369854215132169
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8133568583222395723}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e69d282f63a972041af20d06d8cb692e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SurfaceTag
-  surfaceType: 0
+  m_EditorClassIdentifier: Assembly-CSharp::FallingRock
+  minImpactSpeed: 1
+  hapticAmplitude: 0.8
+  hapticDuration: 0.4
+  hitEffectPrefab: {fileID: 53117777471620531, guid: 7b3eb0775db90fd46897a8de7b88c596, type: 3}

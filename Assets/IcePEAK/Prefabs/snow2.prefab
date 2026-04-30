@@ -147,5 +147,7 @@ MonoBehaviour:
   sheetRows: 2
   frameOrder: 
   shatterPrefab: {fileID: 53117777471620531, guid: 7b3eb0775db90fd46897a8de7b88c596, type: 3}
+  warningSound: {fileID: 8300000, guid: 7e0c068780945f94d885cbdbefe75ca0, type: 3}
+  warnAtProgress: 0.8
   debugHitLocalPoint: {x: 0, y: 0, z: 0}
   debugSurfaceNormal: {x: 0, y: 0, z: 1}

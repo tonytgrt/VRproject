@@ -11,9 +11,11 @@ GameObject:
   - component: {fileID: 1528322305282294479}
   - component: {fileID: 3901136264269553725}
   - component: {fileID: 8392392232730968573}
-  - component: {fileID: 1310909733842464046}
   - component: {fileID: 3973625172599034275}
+  - component: {fileID: 7799126487522897648}
   - component: {fileID: 330224448569579081}
+  - component: {fileID: 1377091619728995263}
+  - component: {fileID: 7112101641903204721}
   m_Layer: 0
   m_Name: stone2
   m_TagString: Untagged
@@ -93,28 +95,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &1310909733842464046
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2695110135715745670}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 5077292127048561562, guid: 561d92f7c747dbf459587e03e0c9dbd1, type: 3}
 --- !u!114 &3973625172599034275
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -134,8 +114,33 @@ MonoBehaviour:
   sheetRows: 2
   frameOrder: 
   shatterPrefab: {fileID: 53117777471620531, guid: 7b3eb0775db90fd46897a8de7b88c596, type: 3}
+  warningSound: {fileID: 0}
+  warnAtProgress: 0.75
   debugHitLocalPoint: {x: 0, y: 0, z: 0}
   debugSurfaceNormal: {x: 0, y: 0, z: 1}
+--- !u!136 &7799126487522897648
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2695110135715745670}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.004
+  m_Height: 0.02
+  m_Direction: 2
+  m_Center: {x: 0.004, y: 0, z: 0.025}
 --- !u!114 &330224448569579081
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -149,3 +154,49 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SurfaceTag
   surfaceType: 0
+--- !u!136 &1377091619728995263
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2695110135715745670}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.0048
+  m_Height: 0.02
+  m_Direction: 2
+  m_Center: {x: 0.004, y: 0, z: 0.011}
+--- !u!136 &7112101641903204721
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2695110135715745670}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.006
+  m_Height: 0.02
+  m_Direction: 0
+  m_Center: {x: 0.002, y: 0, z: 0.0055}
