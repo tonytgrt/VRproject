@@ -30,7 +30,7 @@ namespace IcePEAK.Player
         [Header("Ground Detection")]
         [SerializeField] private LayerMask groundLayer;
         [Tooltip("Raycast distance below the XR Origin to detect ground.")]
-        [SerializeField] private float groundCheckDistance = 0.3f;
+        [SerializeField] private float groundCheckDistance = 1.0f;
 
         [Header("Fall")]
         [Tooltip("Seconds airborne (no ground, no pick embedded) before a respawn triggers. Debounces brief transitions between holds.")]
