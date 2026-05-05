@@ -1,0 +1,57 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.85in]{geometry}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\titlespacing*{\section}{0pt}{0.55em}{0.25em}
+\titleformat{\section}{\normalfont\bfseries\large}{}{0pt}{}
+\setlist{nosep, leftmargin=*}
+\setlength{\parskip}{0.35em}
+\setlength{\parindent}{0pt}
+\pagestyle{empty}
+
+\begin{document}
+
+\begin{center}
+    {\Large \textbf{IcePEAK --- A/B Playtesting Report}} \\[0.2em]
+    \textit{Group 3 -- IcePEAK: Yiding Tian, Cecilia Chen, Jacky Park} \\
+    \textit{Shadow team: Group 2 -- Silhouetto: Aaron Jiang, Aaron Tian, Daniel Chen}
+\end{center}
+
+\textbf{IcePEAK} is a Quest 3 ice-climbing game in which the player swings two VR controllers as ice picks to embed in ice surfaces, holds to grip, and pulls to climb. We selected three features that meaningfully shape moment-to-moment feel, modified the project so each variant could be hot-swapped at runtime via inspector toggles, and ran a $\sim$50-minute back-to-back A/B session with our shadow team.
+
+\section*{Features tested}
+
+\textbf{(1) Ice-pick embed control scheme.}
+\emph{A (current):} the pick embeds only when the trigger is held \emph{and} the tip contacts ice with the swing velocity above a threshold (i.e.\ an actual swing).
+\emph{B (alternative):} the velocity gate is removed --- the pick embeds whenever the tip is inside ice and the trigger is held, regardless of speed.
+
+\textbf{(2) Falling snow ambience.}
+\emph{A (current):} sparse particle emission.
+\emph{B (alternative):} $\sim$2$\times$ emission rate, denser visible snow during play.
+
+\textbf{(3) Crack-to-shatter timer.}
+\emph{A (current):} 6 seconds between an ice pick embedding in a block and that block shattering.
+\emph{B (alternative):} 4 seconds.
+
+\section*{Process}
+
+Each tester played the same climbing test scene under each variant of each feature, in a randomized order, then verbally chose A or B and explained their reasoning. We also recorded any unsolicited feedback on feel, audio, and pacing. All three testers tried all six variants.
+
+\section*{Key findings}
+
+\begin{itemize}
+    \item \textbf{Control scheme: A preferred (3/3).} Testers said the swing-gated embed felt physical and ``earned''; removing the velocity check made the pick feel like a magnet that grabbed surfaces during incidental hand motion. Two testers reported accidental embeds in variant B when they brushed the wall while reaching for the belt.
+    \item \textbf{Snow: B preferred (3/3).} The denser snow read as ``mountainous'' and ``alive'' in VR; the sparse version felt under-decorated for an alpine setting. No tester reported visibility or motion-sickness issues at the higher rate.
+    \item \textbf{Crack timer: A preferred (3/3).} 4 seconds felt rushed --- testers had not finished placing their next pick before the previous block shattered, breaking the climbing rhythm. The 6-second window gave enough headroom to plan and commit to the next hold.
+\end{itemize}
+
+\section*{Design changes incorporated}
+
+We kept variant A for both the control scheme and the crack timer, and switched to variant B for snow density. Beyond the formal A/B picks, the shadow team's open-ended feedback drove two further additions:
+
+\begin{itemize}
+    \item \textbf{Impact audio.} Testers repeatedly noted that a silent embed felt ``unfinished'' in VR, where audio is a primary feedback channel. We added distinct sound effects for both ice-pick embedding and ice-block shattering, played from a 3D AudioSource on the pick so each hand's hits localize correctly.
+    \item \textbf{Grapple$\rightarrow$pick auto-swap.} When the grappling-hook arrives at an ice surface, the gun is automatically replaced by an ice pick in that hand. Testers found the manual swap (stow gun on belt, then draw pick) too slow at the moment of arrival, often falling before they could re-grip --- the auto-swap closes that gap so the player lands and immediately has a usable climbing tool.
+\end{itemize}
+
+\end{document}
